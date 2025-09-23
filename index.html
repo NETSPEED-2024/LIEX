@@ -1,10 +1,11 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Generador para Whatsapp</title>
+  <!-- Script de Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4652731575515103" crossorigin="anonymous"></script>
   <style>
     :root{
       --primary:#2c3e50; --secondary:#3498db; --accent:#e74c3c;
@@ -58,11 +59,9 @@
       <h1>Sistema de Registro de Muestras de Laboratorio</h1>
       <p class="subtitle">Procesamiento de datos para muestras de agua, salmuera y carbonato de litio</p>
     </header>
-
     <div class="content">
       <div class="input-section">
         <h2>📥 Entrada de Datos</h2>
-
         <div class="form-group">
           <label for="sheetType">Seleccionar Tipo de Muestra:</label>
           <select id="sheetType">
@@ -74,12 +73,10 @@
             <option value="reporte_id">📌 Reporte I+D</option>
           </select>
         </div>
-
         <div class="form-group">
           <label for="excelData">Pegar datos de Excel (separados por tabulaciones):</label>
           <textarea id="excelData" placeholder="Pega aquí los datos copiados de Excel..."></textarea>
         </div>
-
         <div class="sheet-info">
           <div class="sheet-pill active" data-sheet="203">203</div>
           <div class="sheet-pill" data-sheet="302">302</div>
@@ -88,11 +85,9 @@
           <div class="sheet-pill" data-sheet="li2co3">Li₂CO₃</div>
           <div class="sheet-pill" data-sheet="reporte_id">Reporte I+D</div>
         </div>
-
         <button class="btn btn-primary" onclick="procesarExcel()">Procesar</button>
         <button class="btn btn-danger" onclick="eliminarDatos()">Eliminar</button>
         <button class="btn" onclick="pegarDatos()">🖌️ Pegar desde Portapapeles</button>
-
         <div class="instructions">
           <h3>Instrucciones:</h3>
           <ul>
@@ -103,29 +98,27 @@
           </ul>
         </div>
       </div>
-
       <div class="output-section">
         <h2>📤 Resultado Formateado</h2>
         <div id="salida" class="output-area">El resultado aparecerá aquí...</div>
         <button class="btn btn-success" onclick="copiarTexto()">📋 Copiar Texto</button>
 
-        <div class="instructions">
-          <h3>Notas importantes:</h3>
-          <ul>
-            <li>El sistema determina sólido/líquido según el <strong>CÓDIGO</strong> (columna 2 en tu Excel).</li>
-            <li>Códigos sólidos: CL, CM, MP, OS → unidades en <strong>mg/kg</strong> donde aplique.</li>
-            <li>Códigos líquidos: SM, AC, OL, AG → unidades en <strong>mg/L</strong> donde aplique.</li>
-            <li>Si el código no coincide con ninguna lista, se usa una detección por identificación como respaldo.</li>
-          </ul>
-        </div>
+        <!-- Bloque de anuncio responsivo -->
+        <ins class="adsbygoogle"
+             style="display:block;margin-top:20px"
+             data-ad-client="ca-pub-4652731575515103"
+             data-ad-slot="1234567890"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>
+             (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
       </div>
     </div>
-
     <footer>
       <p>Sistema de Registro de Muestras de Laboratorio © 2025 | Diseñado para procesar datos de Excel | William Campal</p>
     </footer>
   </div>
-
   <script>
     /* --------------------------
        CONFIGURACIONES (mapas)
@@ -221,7 +214,6 @@
         {nombre:"% Humedad", i:43, u:"%"}
       ]
     };
-
     /* --------------------------
        CODIGOS: definición clara
        SÓLIDOS: CL, CM, MP, OS -> mg/kg (donde aplique)
@@ -229,7 +221,6 @@
        ---------------------------*/
     const codigosSolidos = ["CL","CM","MP","OS"];
     const codigosLiquidos = ["SM","AC","OL","AG"];
-
     /* --------------------------
        Interactividad UI
        ---------------------------*/
@@ -240,7 +231,6 @@
         document.getElementById('sheetType').value = this.getAttribute('data-sheet');
       });
     });
-
     async function pegarDatos(){
       try{
         const text = await navigator.clipboard.readText();
@@ -249,7 +239,6 @@
         alert('No se pudo acceder al portapapeles. Por favor, pega manualmente los datos.');
       }
     }
-
     /* --------------------------
        Detectar estado (sólido/líquido)
        - PRIMERO: mirar el CÓDIGO (columna 1)
@@ -259,7 +248,6 @@
     function detectarEstado(identificacion, codigo){
       const idUp = (identificacion||"").toString().toUpperCase();
       const codUp = (codigo||"").toString().toUpperCase();
-
       // 1) por codigo (columna 1) -> prioridad
       for(const c of codigosSolidos){
         if(codUp.includes(c)) return "solido";
@@ -267,7 +255,6 @@
       for(const c of codigosLiquidos){
         if(codUp.includes(c)) return "liquido";
       }
-
       // 2) fallback por identificacion (columna 0)
       for(const c of codigosSolidos){
         if(idUp.includes(c)) return "solido";
@@ -275,16 +262,13 @@
       for(const c of codigosLiquidos){
         if(idUp.includes(c)) return "liquido";
       }
-
       // 3) otros heurísticos (identifica terminaciones '-S' como solido)
       if(idUp.endsWith("-S")) return "solido";
       if(idUp.includes("-S")) return "solido";
       if(idUp.includes(" OS")) return "solido";
-
       // default
       return "liquido";
     }
-
     /* --------------------------
        Procesar entrada y generar salida
        ---------------------------*/
@@ -292,19 +276,15 @@
       const sheetType = document.getElementById("sheetType").value;
       const textoPegado = document.getElementById("excelData").value.trim();
       if(!textoPegado){ alert("Pega datos desde Excel"); return; }
-
       // separar filas y columnas (tabulador)
       const filas = textoPegado.split("\n").map(r=>r.split("\t"));
       let salida = "";
-
       filas.forEach(raw=>{
         // limpiar campos (trim cada celda)
         const datos = raw.map(d => d ? d.toString().trim() : "");
-
         // si fila vacía -> saltar
         const hasData = datos.some(d => d !== "" && d !== "-" && d !== "N/D");
         if(!hasData) return;
-
         // distintos formatos: reporte_id es un caso especial (fechas al inicio)
         if(sheetType === "reporte_id"){
           const fechaMuestreo = datos[0] || "";
@@ -312,15 +292,12 @@
           const fechaAnalisis = datos[2] || "";
           const identificacion = datos[3] || "";
           const codigo = datos[4] || "";
-
           const estado = detectarEstado(identificacion, codigo);
-
           salida += `\n📅 Fecha de muestreo: ${fechaMuestreo}\n`;
           salida += `📥 Fecha de ingreso: ${fechaIngreso}\n`;
           salida += `🔬 Fecha de análisis: ${fechaAnalisis}\n`;
           salida += `🔹 Identificación: ${identificacion}\n`;
           salida += `🔹 Código: ${codigo}\n`;
-
           const config = configuraciones[sheetType] || [];
           config.forEach(a=>{
             // omitimos los 5 primeros que ya mostramos (0..4)
@@ -334,15 +311,12 @@
               }
             }
           });
-
         } else {
           // formato normal (identificacion en col 0, codigo en col 1)
           const identificacion = datos[0] || "";
           const codigo = datos[1] || "";
           const estado = detectarEstado(identificacion, codigo);
-
           salida += `\n🔹 Identificación: ${identificacion}\n🔹 Código: ${codigo}\n`;
-
           const config = configuraciones[sheetType] || [];
           config.forEach(a=>{
             const valor = (a.i < datos.length) ? datos[a.i] : "";
@@ -353,13 +327,10 @@
             salida += `• ${a.nombre}: ${valor} ${unidad}\n`;
           });
         }
-
         salida += "-------------------------\n";
       });
-
       document.getElementById("salida").textContent = salida.trim();
     }
-
     function eliminarDatos(){
       document.getElementById('excelData').value = '';
       document.getElementById('salida').textContent = 'El resultado aparecerá aquí...';
@@ -367,7 +338,6 @@
       document.getElementById('sheetType').value = '203';
       document.querySelector('.sheet-pill[data-sheet="203"]').classList.add('active');
     }
-
     function copiarTexto(){
       const texto = document.getElementById('salida').textContent;
       if(!texto || texto === 'El resultado aparecerá aquí...'){
@@ -417,4 +387,3 @@
 </script>
 </body>
 </html>
-
