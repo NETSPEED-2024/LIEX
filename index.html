@@ -1,199 +1,55 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sistema de Registro de Muestras de Laboratorio</title>
   <style>
-    :root {
-      --primary: #2c3e50;
-      --secondary: #3498db;
-      --accent: #e74c3c;
-      --light: #ecf0f1;
-      --dark: #2c3e50;
-      --success: #2ecc71;
-      --warning: #f39c12;
-      --danger: #e74c3c;
+    :root{
+      --primary:#2c3e50; --secondary:#3498db; --accent:#e74c3c;
+      --light:#ecf0f1; --dark:#2c3e50; --success:#2ecc71;
+      --warning:#f39c12; --danger:#e74c3c;
     }
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background:linear-gradient(135deg,#f5f7fa 0%,#c3cfe2 100%);
+      color:#333; line-height:1.6; padding:20px; min-height:100vh;
     }
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-      color: #333;
-      line-height: 1.6;
-      padding: 20px;
-      min-height: 100vh;
+    .container{
+      max-width:1200px;margin:0 auto;background:white;border-radius:10px;
+      box-shadow:0 10px 30px rgba(0,0,0,.1);overflow:hidden;
     }
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-      overflow: hidden;
-    }
-    header {
-      background: var(--primary);
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
-    h1 {
-      font-size: 2.2rem;
-      margin-bottom: 10px;
-    }
-    .subtitle {
-      font-size: 1rem;
-      opacity: 0.8;
-    }
-    .content {
-      display: flex;
-      flex-wrap: wrap;
-      padding: 20px;
-    }
-    .input-section, .output-section {
-      flex: 1;
-      min-width: 300px;
-      padding: 20px;
-    }
-    .input-section {
-      border-right: 1px solid #eee;
-    }
-    h2 {
-      color: var(--primary);
-      margin-bottom: 20px;
-      padding-bottom: 10px;
-      border-bottom: 2px solid var(--secondary);
-    }
-    .form-group {
-      margin-bottom: 20px;
-    }
-    label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 600;
-      color: var(--dark);
-    }
-    select, input, textarea {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      font-size: 16px;
-      transition: border 0.3s;
-    }
-    select:focus, input:focus, textarea:focus {
-      outline: none;
-      border-color: var(--secondary);
-      box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-    }
-    textarea {
-      min-height: 150px;
-      resize: vertical;
-    }
-    .btn {
-      display: inline-block;
-      padding: 12px 24px;
-      background: var(--secondary);
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: 600;
-      transition: all 0.3s;
-      margin-right: 10px;
-      margin-bottom: 10px;
-    }
-    .btn:hover {
-      background: #2980b9;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-    .btn-success {
-      background: var(--success);
-    }
-    .btn-success:hover {
-      background: #27ae60;
-    }
-    .btn-danger {
-      background: var(--danger);
-    }
-    .btn-danger:hover {
-      background: #c0392b;
-    }
-    .output-area {
-      background: #f8f9fa;
-      border-radius: 5px;
-      padding: 15px;
-      min-height: 300px;
-      border: 1px solid #ddd;
-      white-space: pre-wrap;
-      font-family: monospace;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-    .instructions {
-      background: #e8f4fc;
-      border-left: 4px solid var(--secondary);
-      padding: 15px;
-      margin: 20px 0;
-      border-radius: 0 5px 5px 0;
-    }
-    .instructions h3 {
-      color: var(--secondary);
-      margin-bottom: 10px;
-    }
-    .instructions ul {
-      padding-left: 20px;
-    }
-    .instructions li {
-      margin-bottom: 8px;
-    }
-    .sheet-info {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin: 15px 0;
-    }
-    .sheet-pill {
-      padding: 8px 15px;
-      background: #e8f4fc;
-      border-radius: 20px;
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--secondary);
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-    .sheet-pill:hover {
-      background: var(--secondary);
-      color: white;
-    }
-    .sheet-pill.active {
-      background: var(--secondary);
-      color: white;
-    }
-    footer {
-      text-align: center;
-      padding: 20px;
-      background: var(--light);
-      color: var(--dark);
-      font-size: 14px;
-    }
-    @media (max-width: 768px) {
-      .content {
-        flex-direction: column;
-      }
-      .input-section {
-        border-right: none;
-        border-bottom: 1px solid #eee;
-      }
-    }
+    header{background:var(--primary);color:white;padding:20px;text-align:center}
+    h1{font-size:2.2rem;margin-bottom:10px}
+    .subtitle{font-size:1rem;opacity:.8}
+    .content{display:flex;flex-wrap:wrap;padding:20px}
+    .input-section,.output-section{flex:1;min-width:300px;padding:20px}
+    .input-section{border-right:1px solid #eee}
+    h2{color:var(--primary);margin-bottom:20px;padding-bottom:10px;border-bottom:2px solid var(--secondary)}
+    .form-group{margin-bottom:20px}
+    label{display:block;margin-bottom:8px;font-weight:600;color:var(--dark)}
+    select,input,textarea{width:100%;padding:12px;border:1px solid #ddd;border-radius:5px;font-size:16px;transition:border .3s}
+    select:focus,input:focus,textarea:focus{outline:none;border-color:var(--secondary);box-shadow:0 0 0 2px rgba(52,152,219,.2)}
+    textarea{min-height:150px;resize:vertical}
+    .btn{display:inline-block;padding:12px 24px;background:var(--secondary);color:white;border:none;border-radius:5px;cursor:pointer;font-size:16px;font-weight:600;transition:all .3s;margin-right:10px;margin-bottom:10px}
+    .btn:hover{background:#2980b9;transform:translateY(-2px);box-shadow:0 4px 8px rgba(0,0,0,.1)}
+    .btn-success{background:var(--success)}
+    .btn-success:hover{background:#27ae60}
+    .btn-danger{background:var(--danger)}
+    .btn-danger:hover{background:#c0392b}
+    .output-area{background:#f8f9fa;border-radius:5px;padding:15px;min-height:300px;border:1px solid #ddd;white-space:pre-wrap;font-family:monospace;font-size:14px;line-height:1.5}
+    .instructions{background:#e8f4fc;border-left:4px solid var(--secondary);padding:15px;margin:20px 0;border-radius:0 5px 5px 0}
+    .instructions h3{color:var(--secondary);margin-bottom:10px}
+    .instructions ul{padding-left:20px}
+    .instructions li{margin-bottom:8px}
+    .sheet-info{display:flex;flex-wrap:wrap;gap:10px;margin:15px 0}
+    .sheet-pill{padding:8px 15px;background:#e8f4fc;border-radius:20px;font-size:14px;font-weight:500;color:var(--secondary);cursor:pointer;transition:all .3s}
+    .sheet-pill:hover{background:var(--secondary);color:white}
+    .sheet-pill.active{background:var(--secondary);color:white}
+    footer{text-align:center;padding:20px;background:var(--light);color:var(--dark);font-size:14px}
+    @media(max-width:768px){.content{flex-direction:column}.input-section{border-right:none;border-bottom:1px solid #eee}}
   </style>
 </head>
 <body>
@@ -202,24 +58,28 @@
       <h1>Sistema de Registro de Muestras de Laboratorio</h1>
       <p class="subtitle">Procesamiento de datos para muestras de agua, salmuera y carbonato de litio</p>
     </header>
+
     <div class="content">
       <div class="input-section">
         <h2>📥 Entrada de Datos</h2>
+
         <div class="form-group">
           <label for="sheetType">Seleccionar Tipo de Muestra:</label>
           <select id="sheetType">
             <option value="203">📌 203 - Muestras de Agua</option>
-            <option value="302">📌 302 - Salmuera/Agua Concentrada</option>
+            <option value="302">📌 302 - Salmuera / Agua Concentrada</option>
             <option value="402-403">📌 402-403 - Calidad de Agua</option>
             <option value="brine">📌 BRINE - Salmueras</option>
             <option value="li2co3">📌 Li₂CO₃ - Carbonato de Litio</option>
             <option value="reporte_id">📌 Reporte I+D</option>
           </select>
         </div>
+
         <div class="form-group">
           <label for="excelData">Pegar datos de Excel (separados por tabulaciones):</label>
           <textarea id="excelData" placeholder="Pega aquí los datos copiados de Excel..."></textarea>
         </div>
+
         <div class="sheet-info">
           <div class="sheet-pill active" data-sheet="203">203</div>
           <div class="sheet-pill" data-sheet="302">302</div>
@@ -228,41 +88,52 @@
           <div class="sheet-pill" data-sheet="li2co3">Li₂CO₃</div>
           <div class="sheet-pill" data-sheet="reporte_id">Reporte I+D</div>
         </div>
+
         <button class="btn btn-primary" onclick="procesarExcel()">Procesar</button>
         <button class="btn btn-danger" onclick="eliminarDatos()">Eliminar</button>
         <button class="btn" onclick="pegarDatos()">🖌️ Pegar desde Portapapeles</button>
+
         <div class="instructions">
           <h3>Instrucciones:</h3>
           <ul>
-            <li>Selecciona el tipo de muestra según la hoja de Excel</li>
-            <li>Copia una fila completa o parcial de datos desde Excel</li>
-            <li>Pega los datos en el campo de texto o usa el botón "Pegar"</li>
-            <li>Haz clic en "Procesar"</li>
-            <li>Copia el resultado formateado para su uso</li>
+            <li>Selecciona la hoja correcta (203, 302, 402-403, brine, Li2CO3 o Reporte I+D)</li>
+            <li>Copia una o varias filas desde Excel (cada fila = una muestra)</li>
+            <li>Pega en el campo o usa "Pegar desde Portapapeles"</li>
+            <li>Haz clic en "Procesar" para obtener la salida formateada</li>
           </ul>
         </div>
       </div>
+
       <div class="output-section">
         <h2>📤 Resultado Formateado</h2>
-        <div class="output-area" id="salida">El resultado aparecerá aquí...</div>
+        <div id="salida" class="output-area">El resultado aparecerá aquí...</div>
         <button class="btn btn-success" onclick="copiarTexto()">📋 Copiar Texto</button>
+
         <div class="instructions">
           <h3>Notas importantes:</h3>
           <ul>
-            <li>Verifica que los datos se hayan procesado correctamente</li>
-            <li>Revisa las unidades de medida para cada parámetro</li>
-            <li>Para muestras sólidas, las unidades son mg/kg</li>
-            <li>Para muestras líquidas, las unidades son mg/L</li>
+            <li>El sistema determina sólido/líquido según el <strong>CÓDIGO</strong> (columna 2 en tu Excel).</li>
+            <li>Códigos sólidos: CL, CM, MP, OS → unidades en <strong>mg/kg</strong> donde aplique.</li>
+            <li>Códigos líquidos: SM, AC, OL, AG → unidades en <strong>mg/L</strong> donde aplique.</li>
+            <li>Si el código no coincide con ninguna lista, se usa una detección por identificación como respaldo.</li>
           </ul>
         </div>
       </div>
     </div>
+
     <footer>
       <p>Sistema de Registro de Muestras de Laboratorio © 2025 | Diseñado para procesar datos de Excel | William Campal</p>
     </footer>
   </div>
+
   <script>
-    /* --- MAPEO DE CADA HOJA CORREGIDO --- */
+    /* --------------------------
+       CONFIGURACIONES (mapas)
+       Cada array asume:
+       col 0 = Identificación
+       col 1 = Código (laboratorio)
+       col 2... = parámetros según el orden del encabezado
+       ---------------------------*/
     const configuraciones = {
       "203": [
         {nombre:"B", i:2, u:"mg/L"}, {nombre:"Ca", i:3, u:"mg/L"}, {nombre:"K", i:4, u:"mg/L"},
@@ -351,91 +222,198 @@
       ]
     };
 
-    /* --- FUNCIONES CORREGIDAS --- */
-    document.querySelectorAll('.sheet-pill').forEach(pill => {
-      pill.addEventListener('click', function() {
-        document.querySelectorAll('.sheet-pill').forEach(p => p.classList.remove('active'));
+    /* --------------------------
+       CODIGOS: definición clara
+       SÓLIDOS: CL, CM, MP, OS -> mg/kg (donde aplique)
+       LÍQUIDOS: SM, AC, OL, AG -> mg/L (donde aplique)
+       ---------------------------*/
+    const codigosSolidos = ["CL","CM","MP","OS"];
+    const codigosLiquidos = ["SM","AC","OL","AG"];
+
+    /* --------------------------
+       Interactividad UI
+       ---------------------------*/
+    document.querySelectorAll('.sheet-pill').forEach(pill=>{
+      pill.addEventListener('click', function(){
+        document.querySelectorAll('.sheet-pill').forEach(p=>p.classList.remove('active'));
         this.classList.add('active');
         document.getElementById('sheetType').value = this.getAttribute('data-sheet');
       });
     });
 
-    async function pegarDatos() {
-      try {
+    async function pegarDatos(){
+      try{
         const text = await navigator.clipboard.readText();
         document.getElementById('excelData').value = text;
-      } catch (err) {
+      }catch(err){
         alert('No se pudo acceder al portapapeles. Por favor, pega manualmente los datos.');
       }
     }
 
-    function procesarExcel() {
-      const sheetType = document.getElementById("sheetType").value;
-      const textoPegado = document.getElementById("excelData").value.trim();
+    /* --------------------------
+       Detectar estado (sólido/líquido)
+       - PRIMERO: mirar el CÓDIGO (columna 1)
+       - SEGUNDO: fallback mirar IDENTIFICACIÓN (columna 0)
+       - TERCERO: si nada, default 'liquido'
+       ---------------------------*/
+    function detectarEstado(identificacion, codigo){
+      const idUp = (identificacion||"").toString().toUpperCase();
+      const codUp = (codigo||"").toString().toUpperCase();
 
-      if (!textoPegado) {
-        alert("Pega datos desde Excel");
-        return;
+      // 1) por codigo (columna 1) -> prioridad
+      for(const c of codigosSolidos){
+        if(codUp.includes(c)) return "solido";
+      }
+      for(const c of codigosLiquidos){
+        if(codUp.includes(c)) return "liquido";
       }
 
-      const filas = textoPegado.split("\n").map(f => f.split("\t"));
+      // 2) fallback por identificacion (columna 0)
+      for(const c of codigosSolidos){
+        if(idUp.includes(c)) return "solido";
+      }
+      for(const c of codigosLiquidos){
+        if(idUp.includes(c)) return "liquido";
+      }
+
+      // 3) otros heurísticos (identifica terminaciones '-S' como solido)
+      if(idUp.endsWith("-S")) return "solido";
+      if(idUp.includes("-S")) return "solido";
+      if(idUp.includes(" OS")) return "solido";
+
+      // default
+      return "liquido";
+    }
+
+    /* --------------------------
+       Procesar entrada y generar salida
+       ---------------------------*/
+    function procesarExcel(){
+      const sheetType = document.getElementById("sheetType").value;
+      const textoPegado = document.getElementById("excelData").value.trim();
+      if(!textoPegado){ alert("Pega datos desde Excel"); return; }
+
+      // separar filas y columnas (tabulador)
+      const filas = textoPegado.split("\n").map(r=>r.split("\t"));
       let salida = "";
 
-      filas.forEach(datos => {
-        if (datos.length < 2) return;
+      filas.forEach(raw=>{
+        // limpiar campos (trim cada celda)
+        const datos = raw.map(d => d ? d.toString().trim() : "");
 
-        if (sheetType === "reporte_id") {
-          // Formato específico para Reporte I+D CORREGIDO
-          salida += `\n📅 Fecha de muestreo: ${datos[0] || ""}\n`;
-          salida += `📥 Fecha de ingreso: ${datos[1] || ""}\n`;
-          salida += `🔬 Fecha de análisis: ${datos[2] || ""}\n`;
-          salida += `🔹 Identificación: ${datos[3] || ""}\n`;
-          salida += `🔹 Código: ${datos[4] || ""}\n`;
+        // si fila vacía -> saltar
+        const hasData = datos.some(d => d !== "" && d !== "-" && d !== "N/D");
+        if(!hasData) return;
+
+        // distintos formatos: reporte_id es un caso especial (fechas al inicio)
+        if(sheetType === "reporte_id"){
+          const fechaMuestreo = datos[0] || "";
+          const fechaIngreso = datos[1] || "";
+          const fechaAnalisis = datos[2] || "";
+          const identificacion = datos[3] || "";
+          const codigo = datos[4] || "";
+
+          const estado = detectarEstado(identificacion, codigo);
+
+          salida += `\n📅 Fecha de muestreo: ${fechaMuestreo}\n`;
+          salida += `📥 Fecha de ingreso: ${fechaIngreso}\n`;
+          salida += `🔬 Fecha de análisis: ${fechaAnalisis}\n`;
+          salida += `🔹 Identificación: ${identificacion}\n`;
+          salida += `🔹 Código: ${codigo}\n`;
 
           const config = configuraciones[sheetType] || [];
-          config.forEach(a => {
-            if (a.i < datos.length && datos[a.i] && datos[a.i] !== "N/D" && datos[a.i] !== "" && datos[a.i] !== "-") {
-              salida += `• ${a.nombre}: ${datos[a.i]} ${a.u}\n`;
+          config.forEach(a=>{
+            // omitimos los 5 primeros que ya mostramos (0..4)
+            if(a.i <= 4) return;
+            if(a.i < datos.length){
+              const valorRaw = datos[a.i];
+              if(valorRaw && valorRaw !== "N/D" && valorRaw !== "-"){
+                let unidad = a.u || "";
+                if(unidad === "mg/L" && estado === "solido") unidad = "mg/kg";
+                salida += `• ${a.nombre}: ${valorRaw} ${unidad}\n`;
+              }
             }
           });
+
         } else {
-          // Formato para otros tipos de muestra
-          let identificacion = datos[0] || "";
-          let codigo = datos[1] || "";
+          // formato normal (identificacion en col 0, codigo en col 1)
+          const identificacion = datos[0] || "";
+          const codigo = datos[1] || "";
+          const estado = detectarEstado(identificacion, codigo);
+
           salida += `\n🔹 Identificación: ${identificacion}\n🔹 Código: ${codigo}\n`;
 
           const config = configuraciones[sheetType] || [];
-          config.forEach(a => {
-            let valor = datos[a.i] || "";
-            if (valor) salida += `• ${a.nombre}: ${valor} ${a.u}\n`;
+          config.forEach(a=>{
+            const valor = (a.i < datos.length) ? datos[a.i] : "";
+            if(!valor || valor === "N/D" || valor === "-") return;
+            let unidad = a.u || "";
+            // si la unidad original es mg/L y hemos detectado sólido -> mostrar mg/kg
+            if(unidad === "mg/L" && estado === "solido") unidad = "mg/kg";
+            salida += `• ${a.nombre}: ${valor} ${unidad}\n`;
           });
         }
+
         salida += "-------------------------\n";
       });
 
       document.getElementById("salida").textContent = salida.trim();
     }
 
-    function eliminarDatos() {
+    function eliminarDatos(){
       document.getElementById('excelData').value = '';
       document.getElementById('salida').textContent = 'El resultado aparecerá aquí...';
-      document.querySelectorAll('.sheet-pill').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.sheet-pill').forEach(p=>p.classList.remove('active'));
       document.getElementById('sheetType').value = '203';
       document.querySelector('.sheet-pill[data-sheet="203"]').classList.add('active');
     }
 
-    function copiarTexto() {
+    function copiarTexto(){
       const texto = document.getElementById('salida').textContent;
-      if (!texto || texto === 'El resultado aparecerá aquí...') {
-        alert('No hay datos para copiar');
-        return;
+      if(!texto || texto === 'El resultado aparecerá aquí...'){
+        alert('No hay datos para copiar'); return;
       }
-      navigator.clipboard.writeText(texto).then(() => {
-        alert('Texto copiado al portapapeles ✅');
-      }).catch(err => {
-        alert('Error al copiar el texto: ' + err);
-      });
+      navigator.clipboard.writeText(texto).then(()=>{ alert('Texto copiado al portapapeles ✅'); })
+      .catch(err=>{ alert('Error al copiar el texto: ' + err); });
     }
   </script>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
 </body>
 </html>
