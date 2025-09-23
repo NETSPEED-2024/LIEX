@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Registro de Muestras de Laboratorio</title>
+  <style>
+    :root {
+      --primary: #2c3e50;
+      --secondary: #3498db;
+      --accent: #e74c3c;
+      --light: #ecf0f1;
+      --dark: #2c3e50;
+      --success: #2ecc71;
+      --warning: #f39c12;
+      --danger: #e74c3c;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      color: #333;
+      line-height: 1.6;
+      padding: 20px;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+    header {
+      background: var(--primary);
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+    }
+    .subtitle {
+      font-size: 1rem;
+      opacity: 0.8;
+    }
+    .content {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 20px;
+    }
+    .input-section, .output-section {
+      flex: 1;
+      min-width: 300px;
+      padding: 20px;
+    }
+    .input-section {
+      border-right: 1px solid #eee;
+    }
+    h2 {
+      color: var(--primary);
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--secondary);
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--dark);
+    }
+    select, input, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+      transition: border 0.3s;
+    }
+    select:focus, input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    }
+    textarea {
+      min-height: 150px;
+      resize: vertical;
+    }
+    .btn {
+      display: inline-block;
+      padding: 12px 24px;
+      background: var(--secondary);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      transition: all 0.3s;
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
+    .btn:hover {
+      background: #2980b9;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .btn-success {
+      background: var(--success);
+    }
+    .btn-success:hover {
+      background: #27ae60;
+    }
+    .btn-danger {
+      background: var(--danger);
+    }
+    .btn-danger:hover {
+      background: #c0392b;
+    }
+    .output-area {
+      background: #f8f9fa;
+      border-radius: 5px;
+      padding: 15px;
+      min-height: 300px;
+      border: 1px solid #ddd;
+      white-space: pre-wrap;
+      font-family: monospace;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .instructions {
+      background: #e8f4fc;
+      border-left: 4px solid var(--secondary);
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 0 5px 5px 0;
+    }
+    .instructions h3 {
+      color: var(--secondary);
+      margin-bottom: 10px;
+    }
+    .instructions ul {
+      padding-left: 20px;
+    }
+    .instructions li {
+      margin-bottom: 8px;
+    }
+    .sheet-info {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 15px 0;
+    }
+    .sheet-pill {
+      padding: 8px 15px;
+      background: #e8f4fc;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--secondary);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .sheet-pill:hover {
+      background: var(--secondary);
+      color: white;
+    }
+    .sheet-pill.active {
+      background: var(--secondary);
+      color: white;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: var(--light);
+      color: var(--dark);
+      font-size: 14px;
+    }
+    @media (max-width: 768px) {
+      .content {
+        flex-direction: column;
+      }
+      .input-section {
+        border-right: none;
+        border-bottom: 1px solid #eee;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Sistema de Registro de Muestras de Laboratorio</h1>
+      <p class="subtitle">Procesamiento de datos para muestras de agua, salmuera y carbonato de litio</p>
+    </header>
+    <div class="content">
+      <div class="input-section">
+        <h2>📥 Entrada de Datos</h2>
+        <div class="form-group">
+          <label for="sheetType">Seleccionar Tipo de Muestra:</label>
+          <select id="sheetType">
+            <option value="203">📌 203 - Muestras de Agua</option>
+            <option value="302">📌 302 - Salmuera/Agua Concentrada</option>
+            <option value="402-403">📌 402-403 - Calidad de Agua</option>
+            <option value="brine">📌 BRINE - Salmueras</option>
+            <option value="li2co3">📌 Li₂CO₃ - Carbonato de Litio</option>
+            <option value="reporte_id">📌 Reporte I+D</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="excelData">Pegar datos de Excel (separados por tabulaciones):</label>
+          <textarea id="excelData" placeholder="Pega aquí los datos copiados de Excel..."></textarea>
+        </div>
+        <div class="sheet-info">
+          <div class="sheet-pill active" data-sheet="203">203</div>
+          <div class="sheet-pill" data-sheet="302">302</div>
+          <div class="sheet-pill" data-sheet="402-403">402-403</div>
+          <div class="sheet-pill" data-sheet="brine">BRINE</div>
+          <div class="sheet-pill" data-sheet="li2co3">Li₂CO₃</div>
+          <div class="sheet-pill" data-sheet="reporte_id">Reporte I+D</div>
+        </div>
+        <button class="btn btn-primary" onclick="procesarExcel()">Procesar</button>
+        <button class="btn btn-danger" onclick="eliminarDatos()">Eliminar</button>
+        <button class="btn" onclick="pegarDatos()">🖌️ Pegar desde Portapapeles</button>
+        <div class="instructions">
+          <h3>Instrucciones:</h3>
+          <ul>
+            <li>Selecciona el tipo de muestra según la hoja de Excel</li>
+            <li>Copia una fila completa o parcial de datos desde Excel</li>
+            <li>Pega los datos en el campo de texto o usa el botón "Pegar"</li>
+            <li>Haz clic en "Procesar"</li>
+            <li>Copia el resultado formateado para su uso</li>
+          </ul>
+        </div>
+      </div>
+      <div class="output-section">
+        <h2>📤 Resultado Formateado</h2>
+        <div class="output-area" id="salida">El resultado aparecerá aquí...</div>
+        <button class="btn btn-success" onclick="copiarTexto()">📋 Copiar Texto</button>
+        <div class="instructions">
+          <h3>Notas importantes:</h3>
+          <ul>
+            <li>Verifica que los datos se hayan procesado correctamente</li>
+            <li>Revisa las unidades de medida para cada parámetro</li>
+            <li>Para muestras sólidas, las unidades son mg/kg</li>
+            <li>Para muestras líquidas, las unidades son mg/L</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <footer>
+      <p>Sistema de Registro de Muestras de Laboratorio © 2025 | Diseñado para procesar datos de Excel | William Campal</p>
+    </footer>
+  </div>
+  <script>
+    /* --- MAPEO DE CADA HOJA CORREGIDO --- */
+    const configuraciones = {
+      "203": [
+        {nombre:"B", i:2, u:"mg/L"}, {nombre:"Ca", i:3, u:"mg/L"}, {nombre:"K", i:4, u:"mg/L"},
+        {nombre:"Li", i:5, u:"mg/L"}, {nombre:"Mg", i:6, u:"mg/L"}, {nombre:"Na", i:7, u:"mg/L"},
+        {nombre:"Humedad", i:8, u:"%"}, {nombre:"Fe", i:9, u:"mg/L"}, {nombre:"SO4", i:10, u:"mg/L"},
+        {nombre:"CO3", i:11, u:"mg/L"}, {nombre:"HCO3", i:12, u:"mg/L"}, {nombre:"OH", i:13, u:"mg/L"},
+        {nombre:"pH", i:14, u:""}, {nombre:"Densidad", i:15, u:"g/ml"}, {nombre:"Conductividad", i:16, u:"µS/cm"},
+        {nombre:"Dureza Total", i:17, u:"mg/L"}, {nombre:"Turbidez", i:18, u:"NTU"}, {nombre:"Si", i:19, u:"mg/L"},
+        {nombre:"OD", i:20, u:"%"}
+      ],
+      "302": [
+        {nombre:"B", i:2, u:"mg/L"}, {nombre:"Ca", i:3, u:"mg/L"}, {nombre:"K", i:4, u:"mg/L"},
+        {nombre:"Li", i:5, u:"mg/L"}, {nombre:"Mg", i:6, u:"mg/L"}, {nombre:"Na", i:7, u:"mg/L"},
+        {nombre:"Densidad", i:8, u:"g/ml"}, {nombre:"pH", i:9, u:""}, {nombre:"CO3", i:10, u:"mg/L"},
+        {nombre:"HCO3", i:11, u:"mg/L"}, {nombre:"OH", i:12, u:"mg/L"}, {nombre:"Fe", i:13, u:"mg/L"},
+        {nombre:"Temperatura", i:14, u:"°C"}, {nombre:"% Sólidos", i:15, u:"%"}, {nombre:"Conductividad", i:16, u:"µS/cm"},
+        {nombre:"TDS", i:17, u:"mg/L"}, {nombre:"Cloruros", i:18, u:"%"}, {nombre:"Dureza Total", i:19, u:"mg/L"},
+        {nombre:"Alcalinidad", i:20, u:"mg/L"}, {nombre:"Turbidez", i:21, u:"NTU"}, {nombre:"Cloro libre", i:22, u:"mg/L"},
+        {nombre:"OD", i:23, u:"%"}
+      ],
+      "402-403": [
+        {nombre:"pH", i:2, u:""}, {nombre:"Conductividad", i:3, u:"µS/cm"},
+        {nombre:"Dureza Total", i:4, u:"mg/L"}, {nombre:"Alcalinidad", i:5, u:"mg/L"},
+        {nombre:"Turbidez", i:6, u:"NTU"}, {nombre:"Cloro libre", i:7, u:"mg/L"},
+        {nombre:"OD", i:8, u:"%"}, {nombre:"Fe", i:9, u:"mg/L"}, {nombre:"Temperatura", i:10, u:"°C"},
+        {nombre:"K", i:11, u:"mg/L"}, {nombre:"Li", i:12, u:"mg/L"}, {nombre:"Mg", i:13, u:"mg/L"},
+        {nombre:"Mn", i:14, u:"mg/L"}, {nombre:"Na", i:15, u:"mg/L"}, {nombre:"SO4", i:16, u:"mg/L"},
+        {nombre:"Densidad", i:17, u:"g/ml"}
+      ],
+      "brine": [
+        {nombre:"B", i:2, u:"mg/L"}, {nombre:"Ca", i:3, u:"mg/L"}, {nombre:"K", i:4, u:"mg/L"},
+        {nombre:"Li", i:5, u:"mg/L"}, {nombre:"Mg", i:6, u:"mg/L"}, {nombre:"Na", i:7, u:"mg/L"},
+        {nombre:"Densidad", i:8, u:"g/ml"}, {nombre:"pH", i:9, u:""}
+      ],
+      "li2co3": [
+        {nombre:"B", i:2, u:"mg/kg"}, {nombre:"Ca", i:3, u:"mg/kg"}, {nombre:"K", i:4, u:"mg/kg"},
+        {nombre:"Li", i:5, u:"mg/kg"}, {nombre:"Mg", i:6, u:"mg/kg"}, {nombre:"Na", i:7, u:"mg/kg"},
+        {nombre:"Humedad", i:8, u:"%"}, {nombre:"CO3²⁻", i:9, u:"mg/kg"}, {nombre:"Pureza", i:10, u:"%"},
+        {nombre:"Fe", i:13, u:"mg/kg"}, {nombre:"SO4", i:14, u:"mg/kg"}, {nombre:"Al", i:15, u:"mg/kg"}
+      ],
+      "reporte_id": [
+        {nombre:"Fecha de muestreo", i:0, u:""},
+        {nombre:"Fecha de ingreso", i:1, u:""},
+        {nombre:"Fecha de análisis", i:2, u:""},
+        {nombre:"Identificación", i:3, u:""},
+        {nombre:"Código", i:4, u:""},
+        {nombre:"As", i:5, u:"ppm"},
+        {nombre:"Li", i:6, u:"ppm"},
+        {nombre:"Na", i:7, u:"ppm"},
+        {nombre:"K", i:8, u:"ppm"},
+        {nombre:"Al", i:9, u:"ppm"},
+        {nombre:"B", i:10, u:"ppm"},
+        {nombre:"Ba", i:11, u:"ppm"},
+        {nombre:"Ca", i:12, u:"ppm"},
+        {nombre:"Cd", i:13, u:"ppm"},
+        {nombre:"Cr", i:14, u:"ppm"},
+        {nombre:"Cu", i:15, u:"ppm"},
+        {nombre:"Fe", i:16, u:"ppm"},
+        {nombre:"Mg", i:17, u:"ppm"},
+        {nombre:"Mn", i:18, u:"ppm"},
+        {nombre:"Ni", i:19, u:"ppm"},
+        {nombre:"S", i:20, u:"ppm"},
+        {nombre:"Sr", i:21, u:"ppm"},
+        {nombre:"Si", i:22, u:"ppm"},
+        {nombre:"Ti", i:23, u:"ppm"},
+        {nombre:"Zn", i:24, u:"ppm"},
+        {nombre:"Pb", i:25, u:"ppm"},
+        {nombre:"PO4", i:26, u:"ppm"},
+        {nombre:"SO4", i:27, u:"ppm"},
+        {nombre:"Densidad", i:28, u:"g/ml"},
+        {nombre:"pH", i:29, u:""},
+        {nombre:"Temperatura", i:30, u:"°C"},
+        {nombre:"Humedad", i:31, u:"%"},
+        {nombre:"% Sólidos", i:32, u:"%"},
+        {nombre:"Conductividad", i:33, u:"µS/cm"},
+        {nombre:"STD", i:34, u:"ppm"},
+        {nombre:"Ca (volumétrico)", i:35, u:"ppm"},
+        {nombre:"Cloruros", i:36, u:"ppm"},
+        {nombre:"Dureza Total", i:37, u:"ppm"},
+        {nombre:"Alcalinidad", i:38, u:"ppm"},
+        {nombre:"CO3", i:39, u:"ppm"},
+        {nombre:"HCO3", i:40, u:"ppm"},
+        {nombre:"OH", i:41, u:"ppm"},
+        {nombre:"Pureza (% Li₂CO₃)", i:42, u:"%"},
+        {nombre:"% Humedad", i:43, u:"%"}
+      ]
+    };
+
+    /* --- FUNCIONES CORREGIDAS --- */
+    document.querySelectorAll('.sheet-pill').forEach(pill => {
+      pill.addEventListener('click', function() {
+        document.querySelectorAll('.sheet-pill').forEach(p => p.classList.remove('active'));
+        this.classList.add('active');
+        document.getElementById('sheetType').value = this.getAttribute('data-sheet');
+      });
+    });
+
+    async function pegarDatos() {
+      try {
+        const text = await navigator.clipboard.readText();
+        document.getElementById('excelData').value = text;
+      } catch (err) {
+        alert('No se pudo acceder al portapapeles. Por favor, pega manualmente los datos.');
+      }
+    }
+
+    function procesarExcel() {
+      const sheetType = document.getElementById("sheetType").value;
+      const textoPegado = document.getElementById("excelData").value.trim();
+
+      if (!textoPegado) {
+        alert("Pega datos desde Excel");
+        return;
+      }
+
+      const filas = textoPegado.split("\n").map(f => f.split("\t"));
+      let salida = "";
+
+      filas.forEach(datos => {
+        if (datos.length < 2) return;
+
+        if (sheetType === "reporte_id") {
+          // Formato específico para Reporte I+D CORREGIDO
+          salida += `\n📅 Fecha de muestreo: ${datos[0] || ""}\n`;
+          salida += `📥 Fecha de ingreso: ${datos[1] || ""}\n`;
+          salida += `🔬 Fecha de análisis: ${datos[2] || ""}\n`;
+          salida += `🔹 Identificación: ${datos[3] || ""}\n`;
+          salida += `🔹 Código: ${datos[4] || ""}\n`;
+
+          const config = configuraciones[sheetType] || [];
+          config.forEach(a => {
+            if (a.i < datos.length && datos[a.i] && datos[a.i] !== "N/D" && datos[a.i] !== "" && datos[a.i] !== "-") {
+              salida += `• ${a.nombre}: ${datos[a.i]} ${a.u}\n`;
+            }
+          });
+        } else {
+          // Formato para otros tipos de muestra
+          let identificacion = datos[0] || "";
+          let codigo = datos[1] || "";
+          salida += `\n🔹 Identificación: ${identificacion}\n🔹 Código: ${codigo}\n`;
+
+          const config = configuraciones[sheetType] || [];
+          config.forEach(a => {
+            let valor = datos[a.i] || "";
+            if (valor) salida += `• ${a.nombre}: ${valor} ${a.u}\n`;
+          });
+        }
+        salida += "-------------------------\n";
+      });
+
+      document.getElementById("salida").textContent = salida.trim();
+    }
+
+    function eliminarDatos() {
+      document.getElementById('excelData').value = '';
+      document.getElementById('salida').textContent = 'El resultado aparecerá aquí...';
+      document.querySelectorAll('.sheet-pill').forEach(p => p.classList.remove('active'));
+      document.getElementById('sheetType').value = '203';
+      document.querySelector('.sheet-pill[data-sheet="203"]').classList.add('active');
+    }
+
+    function copiarTexto() {
+      const texto = document.getElementById('salida').textContent;
+      if (!texto || texto === 'El resultado aparecerá aquí...') {
+        alert('No hay datos para copiar');
+        return;
+      }
+      navigator.clipboard.writeText(texto).then(() => {
+        alert('Texto copiado al portapapeles ✅');
+      }).catch(err => {
+        alert('Error al copiar el texto: ' + err);
+      });
+    }
+  </script>
+</body>
+</html>
