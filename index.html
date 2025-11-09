@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Generador de Datos — Creado por William Campal</title>
+<title>Generador de Datos — Creado por William Campal 09/11/2025</title>
 <style>
 :root{--primary:#2c3e50;--secondary:#3498db;--danger:#e74c3c}
 body{font-family:Inter,"Segoe UI",Tahoma,sans-serif;background:#f4f6f8;margin:0;color:#222}
@@ -24,12 +24,13 @@ legend{font-weight:700}
 </style>
 </head>
 <body>
-<header><h1>Generador de Datos — Creado por William Campal 08/11/2025</h1></header>
+<header><h1>Generador de Datos — Creado por William Campal</h1></header>
+
 <div class="container">
 
-<!-- =================== PROCESAR DESDE EXCEL =================== -->
 <div class="card">
   <h3>📋 Procesar desde Excel</h3>
+
   <label>Seleccionar plantilla</label>
   <select id="sheetType">
     <option value="203">203</option>
@@ -37,43 +38,54 @@ legend{font-weight:700}
     <option value="402-403">402-403</option>
     <option value="brine">BRINE</option>
     <option value="li2co3">Li₂CO₃</option>
+    <option value="reporte_id">Reporte I+D</option>
   </select>
+
   <label>Pegar filas copiadas desde Excel</label>
   <textarea id="excelData" placeholder="Pega aquí las filas copiadas desde Excel..."></textarea>
+
   <div>
     <button class="btn" onclick="pegarDesdePortapapeles()">📋 Pegar</button>
     <button class="btn" onclick="procesarExcel()">⚙️ Procesar</button>
     <button class="btn btn-danger" onclick="limpiar()">🧹 Limpiar</button>
   </div>
+
   <label>Salida generada</label>
   <div id="salida" class="out">Aquí aparecerá el texto listo para copiar o enviar por WhatsApp.</div>
+
   <div>
     <button class="btn" onclick="copiarSalida()">📄 Copiar</button>
     <button class="btn" onclick="abrirWhatsappPrimerRegistro()">💬 WhatsApp</button>
   </div>
 </div>
 
-<!-- =================== SECCIÓN MANUAL =================== -->
 <div class="card">
   <h3>🧪 Crear muestra manual</h3>
+
   <label>Tipo de muestra</label>
   <select id="tipoManual">
     <option value="liquido">Líquido</option>
     <option value="solido">Sólido</option>
   </select>
+
   <fieldset>
     <legend>Seleccionar analitos</legend>
     <div id="analitosSelect" style="display:flex;flex-wrap:wrap;gap:6px"></div>
   </fieldset>
+
   <label>Identificación</label>
-  <input id="identManual" placeholder="Ej: 203-R001-211025-08:55">
+  <input id="identManual"/>
+
   <label>Código</label>
-  <input id="codigoManual" placeholder="Ej: F-203-SM-211025-27">
+  <input id="codigoManual"/>
+
   <div id="analitosCampos"></div>
+
   <div>
     <button class="btn" onclick="generarManual()">Generar formato</button>
     <button class="btn btn-danger" onclick="borrarManual()">Borrar</button>
   </div>
+
   <label>Salida manual</label>
   <div id="salidaManual" class="out"></div>
   <div>
@@ -82,185 +94,197 @@ legend{font-weight:700}
   </div>
 </div>
 
-<footer>Generador de Datos — Creado por William Campal ©️ 2025</footer>
+<footer>Generador de Datos — Creado por William Campal © 2025</footer>
 </div>
 
 <script>
-function clean(v){return v?v.toString().trim():"";}
-
-/* =================== CONFIGURACIÓN DE PLANTILLAS =================== */
+/* =================== PLANTILLAS =================== */
 const plantillas={
-  "203":[
-    {nombre:"Identificación",i:0},
-    {nombre:"Código",i:1},
-    {nombre:"Li",i:2,u:"mg/L"},
-    {nombre:"Ca",i:3,u:"mg/L"},
-    {nombre:"Mg",i:4,u:"mg/L"},
-    {nombre:"Na",i:5,u:"mg/L"},
-    {nombre:"K",i:6,u:"mg/L"},
-    {nombre:"pH",i:15}
-  ],
-  "302":[
-    {nombre:"Identificación",i:0},
-    {nombre:"Código",i:1},
-    {nombre:"Li",i:2,u:"mg/kg"},
-    {nombre:"Densidad",i:3,u:"g/ml"},
-    {nombre:"pH",i:4},
-    {nombre:"Na2CO3",i:5,u:"%"},
-    {nombre:"Temperatura",i:6,u:"°C"},
-    {nombre:"CO3",i:7,u:"mg/L"},
-    {nombre:"HCO3",i:8,u:"mg/L"},
-    {nombre:"NaOH",i:9,u:"%"},
-    {nombre:"OH",i:10,u:"mg/L"},
-    {nombre:"Fe",i:11,u:"mg/kg"},
-    {nombre:"Cloruros %",i:12,u:"%"}
-  ],
-  "402-403":[
-    {nombre:"Identificación",i:0},
-    {nombre:"Código",i:1},
-    {nombre:"pH",i:2},
-    {nombre:"Conductividad",i:3,u:"µS/cm"},
-    {nombre:"Dureza Tot",i:4,u:"ppm"},
-    {nombre:"Alcalinidad",i:5,u:"ppm"},
-    {nombre:"Turbidez",i:6,u:"NTU"},
-    {nombre:"Cloro libre",i:7,u:"mg/L"},
-    {nombre:"OD",i:8,u:"mg/L"},
-    {nombre:"Fe",i:9,u:"mg/L"},
-    {nombre:"Temperatura",i:10,u:"°C"},
-    {nombre:"K",i:11,u:"mg/L"},
-    {nombre:"Li",i:12,u:"mg/L"},
-    {nombre:"Mg",i:13,u:"mg/L"},
-    {nombre:"Mn",i:14,u:"mg/L"},
-    {nombre:"Na",i:15,u:"mg/L"},
-    {nombre:"SO4",i:16,u:"mg/L"},
-    {nombre:"Densidad",i:17,u:"g/ml"}
-  ],
-  "brine":[
-    {nombre:"Identificación",i:0},
-    {nombre:"Código",i:1},
-    {nombre:"B",i:2,u:"mg/L"},
-    {nombre:"Ca",i:3,u:"mg/L"},
-    {nombre:"K",i:4,u:"mg/L"},
-    {nombre:"Li",i:5,u:"mg/L"},
-    {nombre:"Mg",i:6,u:"mg/L"},
-    {nombre:"Densidad",i:7,u:"g/ml"},
-    {nombre:"pH",i:8},
-    {nombre:"Ca (2)",i:9,u:"mg/L"}
-  ],
-  "li2co3":[
-    {nombre:"Identificación",i:0},
-    {nombre:"Código",i:1},
-    {nombre:"Li",i:2,u:"mg/kg"},
-    {nombre:"Ca",i:3,u:"mg/kg"},
-    {nombre:"Mg",i:4,u:"mg/kg"},
-    {nombre:"K",i:5,u:"mg/kg"},
-    {nombre:"Na",i:6,u:"mg/kg"},
-    {nombre:"B",i:7,u:"mg/kg"},
-    {nombre:"Fe",i:8,u:"mg/kg"},
-    {nombre:"SO4",i:9,u:"mg/kg"},
-    {nombre:"Humedad %",i:10,u:"%"},
-    {nombre:"Cloruros",i:11,u:"mg/kg"},
-    {nombre:"Pureza",i:12,u:"%"}
-  ]
+
+"203":[
+  { nombre:"Identificación", i:0 },
+  { nombre:"Código", i:1 },
+
+  { nombre:"Ca", i:2, u:"mg/L" },
+  { nombre:"Li", i:3, u:"mg/L" },
+  { nombre:"pH", i:4 },
+
+  { nombre:"Mg", i:5, u:"mg/L" },
+  { nombre:"Na", i:6, u:"mg/L" },
+  { nombre:"K", i:7, u:"mg/L" },
+  { nombre:"Fe", i:8, u:"mg/L" },
+  { nombre:"SO4", i:9, u:"mg/L" },
+  { nombre:"CO3", i:10, u:"mg/L" },
+  { nombre:"HCO3", i:11, u:"mg/L" },
+  { nombre:"OH", i:12, u:"mg/L" },
+
+  { nombre:"densidad", i:13, u:"g/ml" },
+  { nombre:"Conductividad", i:14, u:"µS/cm" },
+  { nombre:"Turbidez", i:15, u:"NTU" },
+  { nombre:"OD", i:16, u:"%" },
+  { nombre:"Pureza", i:17, u:"%" }
+],
+
+"302":[
+  { nombre:"Identificación", i:0 },
+  { nombre:"Código", i:1 },
+  { nombre:"B", i:2, u:"ppm" },
+  { nombre:"Ca", i:3, u:"ppm" },
+  { nombre:"K", i:4, u:"ppm" },
+  { nombre:"Li", i:5, u:"ppm" },
+  { nombre:"Mg", i:6, u:"ppm" },
+  { nombre:"Na", i:7, u:"ppm" },
+  { nombre:"densidad", i:8, u:"g/ml" },
+  { nombre:"pH", i:9 },
+  { nombre:"Na2CO3", i:10, u:"%" },
+  { nombre:"temperatura", i:11, u:"°C" },
+  { nombre:"CO3", i:12, u:"ppm" },
+  { nombre:"HCO3", i:13, u:"ppm" },
+  { nombre:"NaOH", i:14, u:"ppm" },
+  { nombre:"OH", i:15, u:"ppm" },
+  { nombre:"Fe", i:16, u:"ppm" },
+  { nombre:"% Sólidos", i:17, u:"%" },
+  { nombre:"Conductividad", i:18, u:"µS/cm" },
+  { nombre:"TDS", i:19, u:"ppm" },
+  { nombre:"Cloruros", i:20, u:"%" },
+  { nombre:"Salinidad", i:21, u:"%" },
+  { nombre:"Turbidez", i:22, u:"NTU" },
+  { nombre:"Cloro Libre", i:23, u:"mg/L" },
+  { nombre:"OD", i:24, u:"%" }
+],
+
+"402-403":[
+ {nombre:"Identificación",i:0},
+ {nombre:"Código",i:1},
+ {nombre:"B",i:2,u:"mg/L"},
+ {nombre:"Ca",i:3,u:"mg/L"},
+ {nombre:"K",i:4,u:"mg/L"},
+ {nombre:"Li",i:5,u:"mg/L"},
+ {nombre:"Mg",i:6,u:"mg/L"},
+ {nombre:"Na",i:7,u:"mg/L"},
+ {nombre:"Fe",i:8,u:"mg/L"},
+ {nombre:"SO4",i:9,u:"mg/L"},
+ {nombre:"CO3",i:10,u:"mg/L"},
+ {nombre:"HCO3",i:11,u:"mg/L"},
+ {nombre:"pH",i:12},
+ {nombre:"Densidad",i:13,u:"g/ml"},
+ {nombre:"Conductividad",i:14,u:"µS/cm"}
+],
+
+"brine":[
+ {nombre:"Identificación",i:0},
+ {nombre:"Código",i:1},
+ {nombre:"Ca",i:2,u:"mg/L"},
+ {nombre:"K",i:3,u:"mg/L"},
+ {nombre:"Li",i:4,u:"mg/L"},
+ {nombre:"Mg",i:5,u:"mg/L"},
+ {nombre:"Na",i:6,u:"mg/L"},
+ {nombre:"SO4",i:7,u:"mg/L"},
+ {nombre:"CO3",i:8,u:"mg/L"},
+ {nombre:"HCO3",i:9,u:"mg/L"},
+ {nombre:"Cl",i:10,u:"mg/L"},
+ {nombre:"pH",i:11},
+ {nombre:"Densidad",i:12,u:"g/ml"}
+],
+
+"li2co3":[
+ {nombre:"Identificación",i:0},
+ {nombre:"Código",i:1},
+ {nombre:"Li2CO3 %",i:2,u:"%"},
+ {nombre:"Na",i:3,u:"mg/kg"},
+ {nombre:"K",i:4,u:"mg/kg"},
+ {nombre:"Ca",i:5,u:"mg/kg"},
+ {nombre:"Mg",i:6,u:"mg/kg"},
+ {nombre:"Fe",i:7,u:"mg/kg"},
+ {nombre:"Ni",i:8,u:"mg/kg"},
+ {nombre:"Mn",i:9,u:"mg/kg"},
+ {nombre:"Cu",i:10,u:"mg/kg"},
+ {nombre:"Zn",i:11,u:"mg/kg"},
+ {nombre:"pH",i:12}
+],
+
+"reporte_id":[
+ {nombre:"Identificación",i:0},
+ {nombre:"Código",i:1},
+ {nombre:"Ensayo",i:2},
+ {nombre:"Resultado",i:3},
+ {nombre:"Unidad",i:4},
+ {nombre:"Observaciones",i:5}
+]
 };
 
 /* =================== PROCESAR =================== */
+function clean(v){return v?v.toString().trim():"";}
+
 function procesarExcel(){
-  const raw=document.getElementById("excelData").value.trim();
-  if(!raw){alert("Pegá filas desde Excel.");return;}
-  const rows=raw.split(/\n/).filter(r=>r.trim()!="");
-  const tipo=document.getElementById("sheetType").value;
-  const plantilla=plantillas[tipo];
-  let salida="";
-  rows.forEach(row=>{
-    const cols=row.split(/\t/);
-    while(cols.length<20)cols.push("");
-    const id=clean(cols[0]),cod=clean(cols[1]);
-    if(!id&&!cod)return;
-    salida+=`🔹 Identificación: ${id}\n🔹 Código: ${cod}\n`;
-    plantilla.forEach((c,j)=>{
-      if(j<2)return;
-      let v=clean(cols[c.i]).replace(",",".");
-      if(!v||v=="N/D"||v=="<50")return;
-      salida+=`• ${c.nombre}: ${v}${c.u?" "+c.u:""}\n`;
-    });
-    salida+="-------------------------\n";
-  });
-  document.getElementById("salida").textContent=salida||"No hay datos válidos.";
+ const raw=document.getElementById("excelData").value.trim();
+ if(!raw){alert("Pegá filas desde Excel.");return;}
+ const rows=raw.replace(/\r/g,"").split(/\n/).filter(r=>r.trim()!="");
+ const parsed=rows.map(l=>l.split(/\t|;/).map(x=>x.trim()));
+ const plantilla=plantillas[document.getElementById("sheetType").value];
+
+ let salida="";
+ parsed.forEach(r=>{
+   if(r.length<2)return;
+   let id=clean(r[0]),cod=clean(r[1]);
+   if(!id&&!cod)return;
+
+   salida+=`🔹 Identificación: ${id}\n🔹 Código: ${cod}\n`;
+
+   plantilla.forEach((c,j)=>{
+     if(j<2)return;
+     let v=r[c.i]||"";
+     if(!v&&v.toUpperCase()!="N/D")return;
+     salida+=`• ${c.nombre}: ${v}${c.u?" "+c.u:""}\n`;
+   });
+
+   salida+="-------------------------\n";
+ });
+
+ document.getElementById("salida").textContent=salida||"No hay datos válidos.";
 }
 
-/* =================== UTILITARIAS =================== */
-async function pegarDesdePortapapeles(){
-  try{document.getElementById("excelData").value=await navigator.clipboard.readText();}
-  catch{alert("Pegá manualmente.");}
-}
-function copiarSalida(){
-  const t=document.getElementById("salida").textContent.trim();
-  if(!t)return alert("Nada para copiar.");
-  navigator.clipboard.writeText(t).then(()=>alert("Copiado ✅"));
-}
-function abrirWhatsappPrimerRegistro(){
-  const t=document.getElementById("salida").textContent.trim();
-  if(!t)return alert("Nada para enviar.");
-  const f=t.split("-------------------------")[0];
-  window.open("https://web.whatsapp.com/send?text="+encodeURIComponent(f),"_blank");
-}
-function limpiar(){
-  document.getElementById("excelData").value="";
-  document.getElementById("salida").textContent="";
-}
+/* =================== UTILIDADES =================== */
+async function pegarDesdePortapapeles(){try{document.getElementById("excelData").value=await navigator.clipboard.readText();}catch{alert("Pegá manualmente.")}}
+function copiarSalida(){const t=document.getElementById("salida").textContent;if(!t.trim())return;navigator.clipboard.writeText(t).then(()=>alert("Copiado ✅"))}
+function abrirWhatsappPrimerRegistro(){const t=document.getElementById("salida").textContent.trim();if(!t)return;const f=t.split("-------------------------")[0];window.open("https://web.whatsapp.com/send?text="+encodeURIComponent(f),"_blank")}
+function limpiar(){document.getElementById("excelData").value="";document.getElementById("salida").textContent="";}
 
-/* =================== SECCIÓN MANUAL =================== */
-const analitos=["Li","Ca","Mg","Na","K","B","Fe","SO4","CO3","HCO3","OH","Cloruros","Cloruros %","Densidad","pH","Temperatura"];
+/* =================== MANUAL =================== */
+const analitos=["B","Ca","K","Li","Mg","Na","Fe","SO4","CO3","HCO3","Si","Cl","Ni","Mn","Cu","Zn","pH","Densidad","Conductividad","Turbidez","Li2CO3 %","Ensayo","Resultado","Unidad","Observaciones"];
 function crearCheckbox(){
-  const c=document.getElementById("analitosSelect");c.innerHTML="";
-  analitos.forEach(a=>{
-    c.innerHTML+=`<label><input type="checkbox" value="${a}" onchange="mostrarCampos()"> ${a}</label>`;
-  });
+ const c=document.getElementById("analitosSelect");c.innerHTML="";
+ analitos.forEach(a=>{c.innerHTML+=`<label><input type="checkbox" value="${a}" onchange="mostrarCampos()"> ${a}</label>`});
 }
 function mostrarCampos(){
-  const sel=[...document.querySelectorAll("#analitosSelect input:checked")].map(i=>i.value);
-  const cont=document.getElementById("analitosCampos");
-  cont.innerHTML="";
-  sel.forEach(a=>cont.innerHTML+=`<label>${a}</label><input id="a_${a.replace(/\W+/g,'')}" placeholder="${a}">`);
+ const sel=[...document.querySelectorAll("#analitosSelect input:checked")].map(i=>i.value);
+ const cont=document.getElementById("analitosCampos");cont.innerHTML="";
+ sel.forEach(a=>cont.innerHTML+=`<label>${a}</label><input id="a_${a.replace(/\W+/g,'')}" placeholder="${a}">`);
 }
 function generarManual(){
-  const id=document.getElementById("identManual").value.trim();
-  const cod=document.getElementById("codigoManual").value.trim();
-  if(!id||!cod)return alert("Completá Identificación y Código.");
-  const sel=[...document.querySelectorAll("#analitosSelect input:checked")].map(i=>i.value);
-  let out=`🔹 Identificación: ${id}\n🔹 Código: ${cod}\n`;
-  sel.forEach(a=>{
-    let v=document.getElementById("a_"+a.replace(/\W+/g,'')).value.trim().replace(",",".");
-    if(!v)return;
-    let u="";
-    if(["Ca","Li","Mg","Na","K","B","Fe","SO4","CO3","HCO3","OH","Cloruros"].includes(a))u="mg/L";
-    else if(a=="Densidad")u="g/ml";
-    else if(a=="Temperatura")u="°C";
-    else if(a.includes("%"))u="%";
-    out+=`• ${a}: ${v}${u?" "+u:""}\n`;
-  });
-  out+="-------------------------";
-  document.getElementById("salidaManual").textContent=out;
-  document.getElementById("salida").textContent=out;
+ const tipo=document.getElementById("tipoManual").value;
+ const id=document.getElementById("identManual").value.trim();
+ const cod=document.getElementById("codigoManual").value.trim();
+ if(!id||!cod)return alert("Completá Identificación y Código.");
+ const sel=[...document.querySelectorAll("#analitosSelect input:checked")].map(i=>i.value);
+ let out=`🔹 Identificación: ${id}\n🔹 Código: ${cod}\n`;
+ sel.forEach(a=>{
+   const v=document.getElementById("a_"+a.replace(/\W+/g,'')).value.trim();
+   if(!v&&v.toUpperCase()!="N/D")return;
+   let u="";
+   if(["B","Ca","K","Li","Mg","Na","Fe","SO4","CO3","HCO3","Si","Cl","Ni","Mn","Cu","Zn"].includes(a))u=tipo=="solido"?"mg/kg":"mg/L";
+   else if(a=="Densidad")u="g/ml";
+   else if(a=="Conductividad")u="µS/cm";
+   else if(a=="Turbidez")u="NTU";
+   out+=`• ${a}: ${v}${u?" "+u:""}\n`;
+ });
+ out+="-------------------------";
+ document.getElementById("salidaManual").textContent=out;
+ document.getElementById("salida").textContent=out;
 }
-function copiarManual(){
-  const t=document.getElementById("salidaManual").textContent;
-  if(!t.trim())return;
-  navigator.clipboard.writeText(t).then(()=>alert("Copiado ✅"));
-}
-function whatsappManual(){
-  const t=document.getElementById("salidaManual").textContent.trim();
-  if(!t)return;
-  window.open("https://web.whatsapp.com/send?text="+encodeURIComponent(t),"_blank");
-}
-function borrarManual(){
-  document.getElementById("analitosCampos").innerHTML="";
-  document.getElementById("identManual").value="";
-  document.getElementById("codigoManual").value="";
-  document.querySelectorAll("#analitosSelect input").forEach(c=>c.checked=false);
-  document.getElementById("salidaManual").textContent="";
-}
+function copiarManual(){const t=document.getElementById("salidaManual").textContent;if(!t.trim())return;navigator.clipboard.writeText(t).then(()=>alert("Copiado ✅"))}
+function whatsappManual(){const t=document.getElementById("salidaManual").textContent.trim();if(!t)return;window.open("https://web.whatsapp.com/send?text="+encodeURIComponent(t),"_blank")}
+function borrarManual(){document.getElementById("analitosCampos").innerHTML="";document.getElementById("identManual").value="";document.getElementById("codigoManual").value="";document.querySelectorAll("#analitosSelect input").forEach(c=>c.checked=false);document.getElementById("salidaManual").textContent="";}
 crearCheckbox();
 </script>
 </body>
